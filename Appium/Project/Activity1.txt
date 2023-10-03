@@ -1,0 +1,91 @@
+package liveProject;
+
+
+import io.appium.java_client.AppiumBy;
+import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.android.options.UiAutomator2Options;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import static org.testng.Assert.assertEquals;
+
+public class Activity1 {
+	AndroidDriver driver;
+    	WebDriverWait wait;
+
+   public void setup() throws MalformedURLException {
+
+        //Set desired capabilites
+        UiAutomator2Options options=new UiAutomator2Options();
+        options.setDeviceName("Emulator_Pixel");
+        options.setPlatformName("android");
+        options.setAutomationName("UIAutomator2");
+        options.setAppPackage("com.google.android.apps.tasks");
+        options.setAppActivity(".ui.TaskListsActivity");
+        options.noReset();
+
+        //set appium address
+
+        URL serverURL=new URL("http://localhost:4723/wd/hub");
+        driver=new AndroidDriver(serverURL,options);
+	wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+    }
+
+  @Test
+  public void createListOfTasks() {
+	  
+	  WebElement addTask = driver.findElement(AppiumBy.id("com.google.android.apps.tasks:id/tasks_fab"));
+	  addTask.click();
+	  //creating task 1
+	  
+	  wait.until(ExpectedConditions.visibilityOfElementLocated(AppiumBy.id("com.google.android.apps.tasks:id/add_task_title"))).sendKeys("Complete Activity with Google Tasks");
+	  WebElement save = driver.findElement(AppiumBy.id("com.google.android.apps.tasks:id/add_task_done"));
+	  save.click();
+	  wait.until(ExpectedConditions.visibilityOfElementLocated(AppiumBy.id("com.google.android.apps.tasks:id/task_name"))).isDisplayed();
+	  String result = driver.findElement(AppiumBy.id("com.google.android.apps.tasks:id/task_name")).getText();
+	  System.out.println("task 1: " + result);
+	  assertEquals(result,"Complete Activity with Google Tasks");
+	  
+	  //creating task 2
+	  WebElement addTask2 = driver.findElement(AppiumBy.id("com.google.android.apps.tasks:id/tasks_fab"));
+	  wait.until(ExpectedConditions.visibilityOf(addTask2)).click();
+	  wait.until(ExpectedConditions.visibilityOfElementLocated(AppiumBy.id("com.google.android.apps.tasks:id/add_task_title"))).sendKeys("Complete Activity with Google Keep");
+	  WebElement save2 = driver.findElement(AppiumBy.id("com.google.android.apps.tasks:id/add_task_done"));
+	  save2.click();
+	  wait.until(ExpectedConditions.visibilityOfElementLocated(AppiumBy.id("com.google.android.apps.tasks:id/task_name"))).isDisplayed();
+	  String result2 = driver.findElement(AppiumBy.id("com.google.android.apps.tasks:id/task_name")).getText();
+	  System.out.println("task 2: " + result2);
+	  assertEquals(result2,"Complete Activity with Google Keep");
+	  
+	  //creating task 3
+	  WebElement addTask3 = driver.findElement(AppiumBy.id("com.google.android.apps.tasks:id/tasks_fab"));
+	  wait.until(ExpectedConditions.visibilityOf(addTask3)).click();
+	  wait.until(ExpectedConditions.visibilityOfElementLocated(AppiumBy.id("com.google.android.apps.tasks:id/add_task_title"))).sendKeys("Complete the second Activity Google Keep");
+	  WebElement save3 = driver.findElement(AppiumBy.id("com.google.android.apps.tasks:id/add_task_done"));
+	  save3.click();
+	  wait.until(ExpectedConditions.visibilityOfElementLocated(AppiumBy.id("com.google.android.apps.tasks:id/task_name"))).isDisplayed();
+	  String result3 = driver.findElement(AppiumBy.id("com.google.android.apps.tasks:id/task_name")).getText();
+	  System.out.println("task 3: " + result3);
+	  assertEquals(result3,"Complete the second Activity Google Keep");
+	
+  }
+ 
+
+  @AfterClass
+  public void afterClass() {
+	  
+	  driver.quit();
+  }
+
+}
